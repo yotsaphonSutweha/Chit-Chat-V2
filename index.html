@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>Document</title>
+    <style>
+        #message{
+            width: 500px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="join"></div>
+    <div id="announcement"></div>
+    <div id="message"></div>
+    <input type="text" id="nickname" placeholder="Name">
+    <input type="text" id="input" placeholder="Type in message">
+    <button id="btn">Send</button>
+    <button id="del">Delete</button>
+    <button id="showAll">Show</button>
+
+    <script>
+        let variableNAme = '';
+
+        const getElement = (id) => {
+            return document.getElementById(id);
+        }
+
+        let socket = io();
+        var room1 = '1';
+        let message = getElement('message');
+            join = getElement('join');
+            announcement = getElement('announcement');
+            nickname = getElement('nickname');
+            input = getElement('input');
+            btn = getElement('btn');
+            delBtn = getElement('del');
+            showAll = getElement('showAll');
+           
+            socket.on('connect', () => {
+                socket.emit('room', room1);
+            });
+
+            // Emit an event to the server
+            btn.addEventListener('click', () => {
+                socket.emit('messages', { input: input.value, nickname: nickname.value });
+            });
+
+            delBtn.addEventListener('click', () => {
+                socket.emit('delete', 'Delete it!');
+            });
+
+            showAll.addEventListener('click', () => {
+                socket.emit('show');
+            });
+
+            input.addEventListener('keypress', () => {
+                join.innerHTML = '';
+                socket.emit('typing', nickname.value);
+            });
+
+            // Socket on client side listens to the messages and render them out on screen
+            socket.on('messages', (data) => {
+                announcement.innerHTML = '';
+                message.innerHTML += `<p>${data.username}: ${data.msg}</p>`;
+                
+            });
+
+            socket.on('typing', (data) => {
+                announcement.innerHTML = `<p><strong>${data} is typing...</strong></p>`;
+            });
+
+            socket.on('join', (data) => {
+                join.innerHTML = `${data}`;
+            });
+    </script>
+</body>
+</html>
