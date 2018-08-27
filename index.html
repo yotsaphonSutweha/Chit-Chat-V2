@@ -30,7 +30,7 @@
             return document.getElementById(id);
         }
 
-        let socket = io();
+        let socket = io('/chatroom');
         var room1 = '1';
         let message = getElement('message');
             join = getElement('join');

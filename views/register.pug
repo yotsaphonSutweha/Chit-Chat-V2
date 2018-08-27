@@ -1,0 +1,18 @@
+extends layout
+block content
+    form(method='POST' action='/register')
+        div
+            label(for="name")  Name:
+            input(type='text' name='name' placeholder='Real Name')
+        div
+            label(for="chatName")  Chat Name:
+            input(type='text' name='chatName' placeholder='Chat Name')
+        div
+            label(for="email") Email:
+            input(type='text' name='email' placeholder='Email')
+        div
+            label(for="password")  Password:
+            input(type='password' name='password' placeholder='Password')
+        div
+            label(for="confirmPassword")  Confirm Password:
+            input(type='password' name='confirmPassword')
