@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const cookieParser = require('cookie-parser');
 
 mongoose.connect('mongodb://localhost:27017/chatapp', {useNewUrlParser: true});
 let db = mongoose.connection;
@@ -16,6 +17,8 @@ app.use(session({
         mongooseConnection: db
     })
 }));
+
+app.use(cookieParser());
 
 app.use((req, res, next) => {
     res.locals.currentUser = req.session.userId;
