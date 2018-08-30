@@ -1,11 +1,34 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../modals/user');
+const middleware = require('../middleware');
 
+// GET Login
+router.get('/login', middleware.isLoggedIn ,(req, res, next) => {
+    return res.render('login');
+});
+
+// POST Login
+router.post('/login', (req, res, next) => {
+    if(req.body.email && req.body.password) {
+        User.authenticate(req.body.email, req.body.password, (err, result) => {
+            if(err || !result) {
+                console.log(err);
+                console.log('Please put in the right password or email');
+            } 
+            req.session.userId = result._id;
+            console.log(req.session.id);
+            res.redirect('/about');
+        });
+    } else {
+        console.log('You cannot leave these fields blank');
+    } 
+});
 // GET register
 router.get('/register', (req, res, next) => {
     res.render('register');
 })
+
 
 // POST register
 router.post('/register', (req, res, next) => {

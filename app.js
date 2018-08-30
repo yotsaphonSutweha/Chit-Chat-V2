@@ -52,6 +52,8 @@ app.use('/', routes);
 //     });
 // });
 
+
+
 app.listen(8888, () => {
     console.log('Registeration system is running on localhost:8888');
 });

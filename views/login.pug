@@ -1,0 +1,8 @@
+extends layout
+block content
+    form(method='POST' action='/login')
+        div
+            input(type='text' name='email' placeholder='Email')
+        div
+            input(type='password' name='password' placeholder='Password')
+        button Login  
