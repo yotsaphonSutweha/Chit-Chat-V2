@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../modals/user');
 const middleware = require('../middleware');
+const jwt = require('jsonwebtoken');
 
 // GET Login
 router.get('/login', middleware.isLoggedIn ,(req, res, next) => {
@@ -24,11 +25,11 @@ router.post('/login', (req, res, next) => {
         console.log('You cannot leave these fields blank');
     } 
 });
+
 // GET register
 router.get('/register', (req, res, next) => {
     res.render('register');
 })
-
 
 // POST register
 router.post('/register', (req, res, next) => {
@@ -68,10 +69,13 @@ router.get('/about', (req, res, next) => {
             if (err) {
                 console.log(err);
             } else {
+                let token = jwt.sign({username: result.chatName}, 'kjsadfnalskdf');
+                console.log(token);
                 res.render('about', {name: result.name, chatName: result.chatName, email: result.email});
             }
         }
     );
+    
 });
 
 module.exports = router;

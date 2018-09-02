@@ -2,12 +2,12 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cookieParser = require('cookie-parser');
-const chatRoom = io.of('/chatroom');
+let chatRoom = io.of('/chatroom');
 r = require('rethinkdb');
 
 let name = '';
 app.use(cookieParser());
-app.get('/', (req, res) => {
+app.get('/chatroom', (req, res) => {
     res.sendFile(__dirname + '/index.html');
     name = req.cookies.chatname;
     console.log(name);
@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 //     res.sendFile(__dirname + '/hello.html');
 // });
 
-io.sockets.on('connection', (socket) => {
+chatRoom.on('connection', (socket) => {
     var c = null;
     r.connect({host: 'localhost', port: 28015, db: 'chat'}, (err, conn) => {
         if (err) throw err;
@@ -25,12 +25,12 @@ io.sockets.on('connection', (socket) => {
         socket.on('room', (room) => {
 
             socket.join(room);
-            io.sockets.in(room).emit('join', 'A user has joined the room');
+            chatRoom.in(room).emit('join', 'A user has joined the room');
 
             socket.on('typing', (data) => {
-                io.sockets.in(room).emit('typing', data);
-            })
-           
+                chatRoom.in(room).emit('typing', data);
+            });
+
             socket.on('messages', (data) => {
                 r.table('msgs').insert({
                     name: data.nickname,
@@ -40,7 +40,7 @@ io.sockets.on('connection', (socket) => {
                     if (err) throw err;
                     r.table('msgs').get(result.generated_keys[0]).run(c, (err, result) => {
                         if (err) throw err;
-                        io.sockets.in(room).emit('messages', {username: name, msg: result.msg});
+                        chatRoom.in(room).emit('messages', {username: name, msg: result.msg});
                     });
                 });
             });
@@ -51,7 +51,7 @@ io.sockets.on('connection', (socket) => {
                     cursor.toArray((err, result) => {
                         if (err) throw err;
                         for(let i = result.length - 1; i >= 0; i--) {
-                            io.sockets.in(room).emit('messages', result[i].msg);
+                            chatRoom.in(room).emit('messages', result[i].msg);
                         }
                     });
                 });

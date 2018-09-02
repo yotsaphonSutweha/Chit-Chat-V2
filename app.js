@@ -8,7 +8,6 @@ const cookieParser = require('cookie-parser');
 
 mongoose.connect('mongodb://localhost:27017/chatapp', {useNewUrlParser: true});
 let db = mongoose.connection;
-
 app.use(session({
     secret: 'kjvsdhgalsjd',
     resave: true,
@@ -17,21 +16,15 @@ app.use(session({
         mongooseConnection: db
     })
 }));
-
 app.use(cookieParser());
-
 app.use((req, res, next) => {
     res.locals.currentUser = req.session.userId;
     next();
 });
-
 db.on('error', console.error.bind(console, 'connection error: '));
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( {extended: false} ));
-
 app.use(express.static(__dirname + '/public'));
-
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
@@ -51,6 +44,7 @@ app.use('/', routes);
 //         error: {}
 //     });
 // });
+
 
 
 

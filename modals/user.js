@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const UserSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -29,11 +30,31 @@ UserSchema.statics.authenticate = function(email, password, callback) {
                 return callback(err);
             } else if (!result) {
                 return callback(err);
-            } else {
-                return callback(null, result);
             }
-        });
+            // return callback(null, result);
+            bcrypt.compare(password, result.password, (err, res) => {
+                if(res === true) {
+                    return callback(null, result);
+                } else {
+                    return callback(err);                
+                }
+            });
+        }
+    );
 }
+
+UserSchema.pre('save', function(next) {
+    let user = this;
+    let password = user.password;
+    const saltRounds = 10;
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err) {
+            return next(err);
+        }
+        user.password = hash;
+        next();
+    });
+});
 
 let User = mongoose.model('User', UserSchema);
 module.exports = User;
