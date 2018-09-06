@@ -1,4 +1,4 @@
-const isLoggedIn = (req, res, next) => {
+let isLoggedIn = (req, res, next) => {
     if(req.session && req.session.userId) {
         return res.redirect('/about');
     } 

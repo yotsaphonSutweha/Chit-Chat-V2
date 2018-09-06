@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../modals/user');
 const middleware = require('../middleware');
-const jwt = require('jsonwebtoken');
+
 
 // GET Login
 router.get('/login', middleware.isLoggedIn ,(req, res, next) => {
@@ -68,14 +68,13 @@ router.get('/about', (req, res, next) => {
             if (err) {
                 console.log(err);
             } else {
-                let token = jwt.sign({username: result.chatName}, 'kjsadfnalskdf');
-                console.log(token);
                 return res.render('about', {name: result.name, chatName: result.chatName, email: result.email});
             }
         }
     );  
 });
 
+// GET logout
 router.get('/logout', (req, res, next) => {
     if (req.session) {
         req.session.destroy((err) => {
@@ -87,6 +86,5 @@ router.get('/logout', (req, res, next) => {
         });  
     } 
 });
-
 
 module.exports = router;

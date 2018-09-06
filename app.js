@@ -34,13 +34,11 @@ app.set('views', __dirname + '/views');
 
 let routes = require('./routes/index');
 app.use('/', routes);
-
 // app.use((req, res, next) => {
 //     let err = new Error('File not found');
 //     err.status = 404;
 //     next(err);
 // });
-
 // app.use((err, req, res, next) => {
 //     res.status(err.status || 500);
 //     res.render('error', {
@@ -48,42 +46,34 @@ app.use('/', routes);
 //         error: {}
 //     });
 // });
-
 let name = '';
 app.get('/chatroom', (req, res) => {
     res.sendFile(__dirname + '/index.html');
-    name = req.cookies.chatname;
-    console.log(name);
+    console.log(req.cookies.chatname);
 });
-
-// app.get('/hello', (req, res) => {
-//     res.sendFile(__dirname + '/hello.html');
-// });
-
 chatRoom.on('connection', (socket) => {
     var c = null;
     r.connect({host: 'localhost', port: 28015, db: 'chat'}, (err, conn) => {
         if (err) throw err;
         c = conn;
         socket.on('room', (room) => {
-
             socket.join(room);
             chatRoom.in(room).emit('join', 'A user has joined the room');
-
-            socket.on('typing', (data) => {
-                chatRoom.in(room).emit('typing', data);
+            
+            socket.on('typing', () => {
+                chatRoom.in(room).emit('typing', { username: 'User' });
             });
 
             socket.on('messages', (data) => {
                 r.table('msgs').insert({
-                    name: data.nickname,
+                    name: 'User',
                     msg: data.input,
                     timestamp: new Date()
                 }).run(c, (err, result) => {
                     if (err) throw err;
                     r.table('msgs').get(result.generated_keys[0]).run(c, (err, result) => {
                         if (err) throw err;
-                        chatRoom.in(room).emit('messages', {username: name, msg: result.msg});
+                        chatRoom.in(room).emit('messages', { username: result.name, msg: result.msg });
                     });
                 });
             });
