@@ -1,0 +1,30 @@
+form {
+    width: 400px;
+    margin: auto;
+    padding-top: 150px;
+    
+}
+
+.btn {
+    background-color: aquamarine;
+    color: white;
+}
+
+h2 {
+    text-align: center;
+}
+
+a {
+    padding: 0 10px;
+}
+
+.list-group {
+    width: 500px;
+    margin: auto;
+    padding: 100px 0;
+}
+
+.signout {
+    text-align: center;
+}
+

@@ -1,8 +1,10 @@
 extends layout
 block content
-    form(method='POST' action='/login')
-        div
-            input(type='text' name='email' placeholder='Email')
-        div
-            input(type='password' name='password' placeholder='Password')
-        button Login  
+    form(method='POST' action='/login' class="form")
+        h2 Sign in to start chatting!
+        div.form-group
+            input(type='text' name='email' placeholder='Email' class='form-control')
+        div.form-group
+            input(type='password' name='password' placeholder='Password' class='form-control')
+        button.btn Login
+        a(href='http://localhost:8888/register') Sign up!  

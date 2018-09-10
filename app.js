@@ -46,9 +46,10 @@ app.use('/', routes);
 //         error: {}
 //     });
 // });
-let name = '';
+
 app.get('/chatroom', (req, res) => {
     res.sendFile(__dirname + '/index.html');
+    name = req.cookies.chatname;
     console.log(req.cookies.chatname);
 });
 chatRoom.on('connection', (socket) => {
@@ -60,13 +61,13 @@ chatRoom.on('connection', (socket) => {
             socket.join(room);
             chatRoom.in(room).emit('join', 'A user has joined the room');
             
-            socket.on('typing', () => {
-                chatRoom.in(room).emit('typing', { username: 'User' });
+            socket.on('typing', (data) => {
+                chatRoom.in(room).emit('typing', { username: data });
             });
 
             socket.on('messages', (data) => {
                 r.table('msgs').insert({
-                    name: 'User',
+                    name: data.nickname,
                     msg: data.input,
                     timestamp: new Date()
                 }).run(c, (err, result) => {

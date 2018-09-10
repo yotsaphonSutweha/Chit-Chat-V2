@@ -1,6 +1,9 @@
 extends layout
 block content
-    p Name: #{name}
-    p Chat Name: #{chatName}
-    p Email: #{email}
-    a(href='/logout') Logout
+    h2 Hey #{chatName}! You can start chatting anonymously. Enjoy!
+    ul.list-group
+        li.list-group-item Name: #{name}
+        li.list-group-item Email: #{email}
+    p.signout
+        a(href='/logout') Logout
+        a(href='/chatroom') Start Chatting!
